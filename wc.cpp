@@ -42,7 +42,6 @@ int countc(char *file) //返回文件的字符数
 		if (a != ' '&&a != '\n'&&a != '\t')
 		cchar++;
 	}
-	cchar--;
 	fclose(f);printf("charnum:%d ",cchar);
 }
 int countl(char *file) //返回文件的行数
@@ -111,7 +110,7 @@ int count_codeline(char *file)//返回文件的代码行数
 {   int ch_num = 0;
     int code_num=0;
 	FILE *f;
-	int flag_1=0; int flag=0;
+	int tag=0; int flag=0;
 	char a; 
 	f = fopen(file, "r");
     if(NULL==(f=fopen(file,"r")))
@@ -121,22 +120,22 @@ int count_codeline(char *file)//返回文件的代码行数
 	{
 		a=fgetc(f);
 		
-		if(flag==0){
+		if(flag==2) {
+		flag=0;tag++;}
+		else{
 		
-		if(a=='\n'&&ch_num>1&&flag==0)
-		{ code_num++; 
-		 ch_num=0;	 }
-        else if(a != ' '&&a != '\n'&&a != '\t'&&a!='/') ch_num++;
-        else if(ch_num==1){if(a != ' '&&a != '\n'&&a != '\t'&&a!='/') ch_num++;} 
-        else if(a=='/'){ flag_1=1;}
-		else if(flag_1==1)
-		{flag=1; code_num--;}}
-        else if(flag==1){flag==0;
-		}
-		
+		if(a=='\n'&&ch_num>1)
+	     {code_num++; 
+		 ch_num=0;	}
+        else if(a != ' '&&a != '\n'&&a != '\t'&&a!='/') {
+		ch_num++;}
         
-		}
-	fclose(f); printf("codeline:%d  ",code_num); 
+        else if(a=='/'){ flag++;}
+	}
+         
+	}
+	
+	fclose(f); printf("codeline:%d  ",code_num-tag); 
 }
 int searchfile(void) //寻找文件夹中的txt文件
 {
@@ -144,7 +143,7 @@ int searchfile(void) //寻找文件夹中的txt文件
     long handle;
     int t=0;
     
-       if( (handle=_findfirst( "H:\\wocao\\*txt", &filefind)) == -1L ) 
+       if( (handle=_findfirst( "H:\\wordcount\\test\\*txt", &filefind)) == -1L ) 
         {
         printf( "没找到txt文件\n");
         }
